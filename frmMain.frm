@@ -419,6 +419,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
  If LastNode Is Nothing Then Exit Sub
  SaveOrder fe, Me.lvw, LastNode.Key & Prog.OrderFilename
  SaveSize Me
+ EndProgram
 End Sub
 
 Private Sub Form_Activate()

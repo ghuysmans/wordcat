@@ -137,9 +137,9 @@ Private Function FormatOrder(o As Integer) As String
  FormatOrder = Right$("0000" & CStr(o), 5)
 End Function
 
-Public Sub ParseOrderFile(Filename As String, BaseDir As String, lvw As ListView)
+Public Sub ParseOrderFile(FileName As String, BaseDir As String, lvw As ListView)
  Dim arr() As String, i As Integer, b As Integer, sort As String, li As ListItem
- arr = Split(ReadFile(Filename), vbCrLf): b = UBound(arr)
+ arr = Split(ReadFile(FileName), vbCrLf): b = UBound(arr)
  On Error Resume Next 'for non-existing files
  For i = 0 To b
   sort = FormatOrder(i)
@@ -439,14 +439,14 @@ Private Sub LoadSettings()
  Tr.LoadTranslation GetSetting(App.EXEName, "Settings", "Translation", "\en.trn")
 End Sub
 
-Public Sub SaveSize(frm As Form)
- SaveSetting App.EXEName, frm.name, "H", frm.Height
- SaveSetting App.EXEName, frm.name, "W", frm.Width
+Public Sub SaveSize(Frm As Form)
+ SaveSetting App.EXEName, Frm.name, "H", Frm.Height
+ SaveSetting App.EXEName, Frm.name, "W", Frm.Width
 End Sub
 
-Public Sub ApplySize(frm As Form, dH As Integer, dW As Integer)
- frm.Height = GetSetting(App.EXEName, frm.name, "H", dH)
- frm.Width = GetSetting(App.EXEName, frm.name, "W", dW)
+Public Sub ApplySize(Frm As Form, dH As Integer, dW As Integer)
+ Frm.Height = GetSetting(App.EXEName, Frm.name, "H", dH)
+ Frm.Width = GetSetting(App.EXEName, Frm.name, "W", dW)
 End Sub
 
 Public Sub ChooseLanguage()
@@ -459,14 +459,22 @@ Public Sub ChooseLanguage()
 End Sub
 
 Public Sub GetWordObject()
- Set WordObj = Nothing 'we can't reuse the object after a merging process
- On Error Resume Next
+ 'We can't reuse the object after a merging process
+ DisposeWordObject
+ 'Create a new one and catch any error
  Set WordObj = CreateObject("Word.Application")
  If err Then
   MsgBox Tr.Translate("The Microsoft Word library can't be loaded. Is it installed?", True), vbCritical
   End
  End If
  On Error GoTo 0
+End Sub
+
+Private Sub DisposeWordObject()
+ On Error Resume Next
+ WordObj.Quit
+ Set WordObj = Nothing
+ err.Clear
 End Sub
 
 Private Sub Main()
@@ -481,7 +489,7 @@ Private Sub Main()
 End Sub
 
 Public Sub EndProgram()
- Set WordObj = Nothing
+ DisposeWordObject
  Set Tr = Nothing
  End
 End Sub
