@@ -1,0 +1,64 @@
+WordCat
+1
+English
+Guillaume Huysmans
+1,1,;d
+Open another folder...
+Sort items alphabetically
+Move the selected item up
+Move the selected item down
+Undo last changes
+Check
+Run!
+Tools
+Open the help file
+About this program...
+Name
+Size
+Last Modified
+Order
+Remove headers/footers
+Count files
+Reset order
+Remove temp. files
+Clear logs
+Merge
+fast method. No int. file
+slower method with int. files
+OPEN
+Template: 
+Target directory
+Ready. Target: $
+Everything seems to be fine!
+Check
+Merged: $
+Saved: $
+Empty folder: $
+Invoked tool: $
+Done. # file#{,s} processed.
+Logs cleared.
+Are you sure to modify all documents? This action can't be undone!
+Confirmation
+Cleaned: $
+Headers/footers removed. # file#{,s} processed.
+Please first select an item!
+Can't write the objects order into $
+This folder can't be accessed: $
+Can't use the template $
+Empty folder: $
+Can't insert $
+Can't save $
+The Microsoft Word library can't be loaded. Is it installed?
+Something went wrong while enumerating files... Did you delete or rename anything?
+Cancelled.
+Can't enumerate files into $!
+Some files/directories are not present in lists: to avoid skipping them,\
+please browse to their parent directory. These files/directories are:\
+\
+$
+Warning: an error has occured while parsing "$".\
+$
+Are you sure to reset order of all files? This action can't be undone!
+Are you sure to discard your last changes?
+Select a language
+[Target]

@@ -1,0 +1,40 @@
+<style>
+ol.howto li {margin-bottom: 12px}
+li {padding-left: 10px}
+li img {display: block; margin-top: 12px}
+p {margin-bottom: 12px}
+</style>
+
+<h1>WordCat help file</h1>
+
+<h2>What's the goal of this application?</h2>
+<p>I had to merge a lot of Word documents located in different folders. These files could me modified almost anytime, so I had to develop this tool. <br />
+It takes the order you give into account for merging files, so you don't have to use some weird filenames to organize your final document.
+</p>
+
+<h2>Advantages</h2>
+<ul>
+<li>Files and directories with a name beginning with a dash are ignored.</li>
+<li>Non-latin characters into Word documents are naturally supported.</li>
+</ul>
+
+<h2>How to use this application</h2>
+<ol class="howto">
+<li>Select a target folder and an optional template (located in the same folder):<img src="target.png" /></li>
+<li>Use the arrows to move up/down the selected file, or use the <i>A-Z</i> icon to sort them alphabetically:<img src="../sort.png" /></li>
+<li>Once you've browsed each folder, use the <i>Check</i> button to verify whether all documents are referenced.</li>
+<li>If it succeeds, click on the <i>Run</i> button and select the method you prefer. The result will be stored in a file called <i>merge.doc</i> into the target directory's root.<br />
+The application will automatically open it for reviewing. Always do some visual checks before printing it!</li>
+</ol>
+
+<h2>Known bug</h2>
+<p>Concatenating files with headers/footers may cause some problems. <br />
+Try removing them via the integrated tool (<i>Tools</i> &rarr; <i>Remove headers/footers</i>) after making a backup...<br />
+This bug is actually due to Microsoft Word's bad headers/footers management.</p>
+
+<h2>Todo list</h2>
+<ul>
+<li>Ordering with multiple selections</li>
+<li>Support .docx files?</li>
+<li>Command-line support (with exit code)</li>
+</ul>

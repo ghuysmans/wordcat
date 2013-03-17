@@ -1,0 +1,64 @@
+WordCat
+1
+Français
+Guillaume Huysmans
+,1,;d
+Ouvrir un autre dossier...
+Trier les éléments par ordre alphabétique
+Faire monter l'élement sélectionné
+Faire descendre l'élement sélectionné
+Annuler les derniers changements
+Vérifier
+Lancer !
+Outils
+Ouvrir l'aide
+À propos de ce programme...
+Nom
+Taille
+Dernière modif.
+Ordre
+Supprimer en-têtes et pieds de pages
+Compter les fichiers
+Réinitialiser l'ordre
+Supprimer les fichiers temporaires
+Effacer le journal
+Fusionner
+méthode rapide sans fichiers intermédiaires
+méthode lente avec fichiers intermédiaires
+OUVRIR
+Modèle : 
+Dossier cible
+Prêt. Cible : $
+Tout semble être en ordre !
+Vérification
+Fusionné : $
+Enregistré : $
+Dossier vide : $
+Outil lancé : $
+Terminé. # fichier#{,s} traité#{,s}.
+Journal effacé.
+Êtes-vous sûr de vouloir modifier tous les documents ? Cette action est irréversible !
+Confirmation
+Effacé : $
+En-têtes et pieds de pages supprimés. # fichier#{,s} traité#{,s}.
+Veuillez d'abord sélectionner un élément !
+Impossible d'enregistrer l'ordre des éléments dans $ !
+Ce dossier est inaccessible : $
+Impossible d'utiliser le modèle $
+Dossier vide : $
+Impossible d'insérer $
+Impossible d'enregistrer $
+La bibliothèque "Microsoft Word Library" n'a pas pu être chargée. Le logiciel est-il installé ?
+Quelque chose s'est mal passé lors de l'énumération des fichiers. Avez-vous supprimé ou renommé quelque chose ?
+Annulé.
+Impossible d'énumérer les fichiers dans $ !
+Certains fichiers/dossiers ne sont pas référencés: pour ne pas les ignorer,\
+veuillez naviguer dans le dossier qui les contient ou à l'intérieur de ceux-ci. Ces fichiers/dossiers sont :\
+\
+$
+Attention : une erreur est survenue lors de l'analyse de "$".\
+$
+Êtes-vous sûr de vouloir réinitialiser l'ordre de tous les fichiers ? Cette action est irréversible !
+Êtes-vous sûr de vouloir annuler vos derniers changements ?
+Sélectionner une langue
+[Cible]
