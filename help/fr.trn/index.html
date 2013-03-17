@@ -1,0 +1,41 @@
+<style>
+ol.howto li {margin-bottom: 12px}
+li {padding-left: 10px}
+li img {display: block; margin-top: 12px}
+p {margin-bottom: 12px}
+</style>
+
+<h1>Aide de WordCat</h1>
+
+<h2>Quel est le but de cette application ?</h2>
+<p>Je devais fusionner un grand nombre de fichiers Word situés dans des dossiers différents. Ces fichiers pouvaient être modifiés presque n'importe quand,<br />
+j'avais donc besoin d'un outil qui puisse automatiser leur fusion et c'est pourquoi j'en ai développé un (il n'en existait pas de gratuits à ma connaissance).<br />
+Il prend en compte l'ordre que vous définissez pour fusionner les fichiers, vous n'avez donc pas besoin d'utiliser des noms de fichiers bizarres pour organiser votre document final.
+</p>
+
+<h2>Avantages</h2>
+<ul>
+<li>Vous pouvez ignorer une partie de l'arborescence : les fichiers et les dossiers avec un nom commençant par tiret sont ignorés.</li>
+<li>Les caractères non latins dans les documents Word sont bien sûr supportés.</li>
+</ul>
+
+<h2>Comment utiliser cette applicaion</h2>
+<ol class="howto">
+<li>Sélectionnez un dossier cible et, si vous le souhaitez, un modèle situé dans le même dossier.:<img src="target.png" /></li>
+<li>Utilisez les flèches pour déplacer vers le haut ou vers le bas le fichier sélectionné, ou utilisez le bouton avec l'icône <i>A-Z</i> pour les trier alphabétiquement:<img src="../sort.png" /></li>
+<li>Une fois que vous êtes allés dans chaque dossier, utilisez le bouton <i>Vérifier</i> pour vérifier si tous les documents sont référencés.</li>
+<li>Si la vérification réussit, cliquez sur le bouton <i>Lancer</i> et sélectionnez la méthode que vous préférez. Le résultat sera enregistré dans un fichier nommé <i>merge.doc</i> dans la racine du dossier cible.<br />
+L'application l'ouvrira automatiquement pour vérification visuelle. Ne négligez pas cette étape avant une impression !</li>
+</ol>
+
+<h2>Bogues connus</h2>
+<p>Concaténer des fichiers avec des en-têtes et pieds de pages peut causer des problèmes.<br />
+Essayez alors de les supprimer via l'outil intégré (<i>Outils</i> &rarr; <i>Supprimer en-têtes et pieds de pages</i>) après avoir fait une copie de sauvegarde...<br />
+Ce bug est en fait issu de la mauvaise gestion de Word, je ne peux malheureusement rien y faire.</p>
+
+<h2>Améliorations futures</h2>
+<ul>
+<li>Ordonner via sélections multiples</li>
+<li>Supporter les fichiers .docx</li>
+<li>Supporter les paramètres en ligne de commande (avec code de retour)</li>
+</ul>

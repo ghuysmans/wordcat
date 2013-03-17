@@ -1,0 +1,8 @@
+frmMain = 44, 58, 867, 488, Z, 22, 29, 845, 459, C
+Prog = 66, 87, 889, 517, 
+frmTarget = 154, 203, 977, 633, C, 22, 29, 845, 459, C
+clsEnumFiles = 66, 87, 889, 517, C
+BrowseFolder = 44, 58, 867, 488, C
+Theme = 44, 58, 867, 488, C
+clsTranslate = 150, 150, 1376, 823, 
+frmTranslations = 0, 0, 0, 0, C, 75, 75, 1301, 748, C
