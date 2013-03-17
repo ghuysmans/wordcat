@@ -1,6 +1,6 @@
 [Setup]
 AppName=WordCat
-AppVerName=WordCat v0.9 r6
+AppVerName=WordCat v0.9 r7
 DefaultDirName={pf}\WordCat
 DefaultGroupName=WordCat
 VersionInfoCopyright=by Guillaume HUYSMANS, 2013
