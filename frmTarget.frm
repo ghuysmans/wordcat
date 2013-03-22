@@ -104,7 +104,16 @@ Private Sub cmbTpl_KeyPress(KeyAscii As Integer): CheckEsc KeyAscii: End Sub
 Private Sub cmdOk_KeyPress(KeyAscii As Integer): CheckEsc KeyAscii: End Sub
 
 
+Private Sub StoreFormat(id As Integer)
+ Prog.DocFormat = id
+ Prog.DocFormat_S = fe.GetExtensionFromL(id, DocFormats)
+#If dbg = 1 Then
+ Addlog "Document format: " & DocFormat_S
+#End If
+End Sub
+
 Private Sub GetTemplates(t As String)
+ StoreFormat 0
  With Me.cmbTpl
   .Clear
   .AddItem "[no template]"
@@ -118,9 +127,14 @@ Private Sub GetTemplates(t As String)
 End Sub
 
 Private Sub fe_ObjectFound(IsDirectory As Boolean, name As String, sz As Double, ft As String)
+ Dim e As Integer
  If IsDirectory Then Exit Sub
- If fe.CheckExtension(name, "dot") = False Then Exit Sub
- Me.cmbTpl.AddItem name
+ e = fe.CheckExtensionL(name, DocFormats)
+ If e > DocFormat Then
+  StoreFormat e
+ ElseIf e = -1 Then
+  If fe.CheckExtensionL(name, TplFormats) <> -1 Then Me.cmbTpl.AddItem name
+ End If
 End Sub
 
 Private Function CheckTarget(t As String) As Boolean

@@ -2,8 +2,10 @@ Attribute VB_Name = "Prog"
 Option Explicit
 
 Public Const OrderFilename As String = "order.dat"
-Public Const IntermFilename As String = "order.tmp.doc"
-Public Const DestFilename As String = "merge.doc"
+Public Const IntermFilename As String = "order.tmp."
+Public Const DestFilename As String = "merge."
+Public Const DocFormats As String = "doc,docx,docm"
+Public Const TplFormats As String = "dot,dotx,dotm"
 Private Const SW_SHOW As Long = 5
 Private Const wdStory As Integer = 6
 
@@ -31,6 +33,7 @@ Private Declare Function MoveFile Lib "kernel32.dll" Alias "MoveFileA" (ByVal lp
 
 Public Target As String, Tpl As String
 Public Count_Files As Integer
+Public DocFormat As Integer, DocFormat_S As String
 Public Tr As clsTranslate
 Private Check_Named As Collection
 Private Check_All As Collection
@@ -86,11 +89,25 @@ Public Function WriteFile(fname As String, Contents As String) As Boolean
  Close #ha
 End Function
 
+Public Function RemoveExtension(FileName As String) As String
+ Dim p As Integer
+ p = InStrRev(FileName, ".")
+ If p Then
+  RemoveExtension = Left$(FileName, p)
+ Else 'no extension
+  RemoveExtension = FileName
+ End If
+End Function
 
 Public Function InterestingObject(fe As clsEnumFiles, IsDir As Boolean, short As String) As Boolean
- InterestingObject = (Left$(short, 1) <> "-") And (short <> IntermFilename) And (short <> DestFilename)
- If IsDir Or (InterestingObject = False) Then Exit Function
- InterestingObject = fe.CheckExtension(short, "doc")
+ Dim e As Integer, ne As String, r As Boolean
+ ne = RemoveExtension(short)
+ r = (Left$(short, 1) <> "-") And (ne <> IntermFilename) And (ne <> DestFilename)
+ If IsDir Or (r = False) Then
+  InterestingObject = r
+ Else
+  InterestingObject = (fe.CheckExtensionL(short, DocFormats) <> -1)
+ End If
 End Function
 
 Public Function SelectedItem(obj As Object, Optional m As Boolean = False, Optional fc As Boolean) As Boolean
@@ -102,22 +119,20 @@ tell:
 End Function
 
 Public Sub PopulateView(fe As clsEnumFiles, FE_Mode As EnumMode, obj As Object, IsDirectory As Boolean, name As String, sz As Double, ft As String)
- Dim parent As String, short As String, p As Integer, li As ListItem
+ Dim Parent As String, short As String, li As ListItem
  If IsDirectory And (FE_Mode = PopItems) Then name = Left$(name, Len(name) - 1)
- p = InStrRev(name, "\", Len(name) - 1)
- short = Mid$(name, p + 1)
+ short = fe.GetShortName(name, Parent)
  If FE_Mode = PopTree Then
   If IsDirectory = False Then Exit Sub
-  parent = Mid$(name, 1, p) 'not really useful but easier to read
-  short = Left$(short, Len(short) - 1)
-  obj.Nodes.Add parent, tvwChild, name, short, "closed"
+  short = Left$(short, Len(short) - 1) 'remove the trailing slash
+  obj.Nodes.Add Parent, tvwChild, name, short, "closed"
  Else
   If IsDirectory Then
    Set li = obj.ListItems.Add(, name, short, , "closed")
    li.SubItems(1) = "[DIR]"
    li.SubItems(2) = ft
   Else
-   If InterestingObject(fe, False, name) Then
+   If InterestingObject(fe, False, short) Then
     Set li = obj.ListItems.Add(, name, short, , "file")
     li.SubItems(1) = FormatNumber(sz, 0, vbFalse, vbFalse, vbTrue)
     li.SubItems(2) = ft
@@ -203,7 +218,7 @@ Public Function CheckFiles(fe As clsEnumFiles, Target As String)
 End Function
 
 Public Sub CheckFiles_CB(fe As clsEnumFiles, IsDirectory As Boolean, name As String)
- Dim p As Integer, short As String, parent As String
+ Dim p As Integer, short As String, Parent As String
  Dim arr() As String, i As Integer, b As Integer
  If IsDirectory Then name = Left$(name, Len(name) - 1)
  p = InStrRev(name, "\")
@@ -212,38 +227,41 @@ Public Sub CheckFiles_CB(fe As clsEnumFiles, IsDirectory As Boolean, name As Str
  If IsDirectory Then
   Check_All.Add name, name
  Else
-  parent = Mid$(name, 1, p)
+  Parent = Mid$(name, 1, p)
   If InterestingObject(fe, False, short) Then
    Check_All.Add name, name
   ElseIf short = OrderFilename Then
    arr = Split(ReadFile(name), vbCrLf)
    b = UBound(arr)
    For i = 0 To b
-    Check_Named.Add parent & arr(i), parent & arr(i)
+    Check_Named.Add Parent & arr(i), Parent & arr(i)
    Next i
   End If
  End If
 End Sub
 
 Public Sub MergeFilesS(hWnd As Long, fe As clsEnumFiles, Target As String)
+ Dim dst As String
  Count_Files = 0
+ GetWordObject
  If fe.Enumerate(Target, True, False) Then
+  DisposeWordObject
   Addlog Tr.Translate("This folder can't be accessed: $", True, Prog.Target), vbExclamation
   Exit Sub
  End If
  MergeFilesS_CB fe, True, Target & "\" 'forced 1st level
- GetWordObject
+ DisposeWordObject
  If fe.Halt = False Then
-  MoveFile Target & "\" & IntermFilename, Target & "\" & DestFilename 'rename
+  dst = Target & "\" & DestFilename & DocFormat_S
+  SafeKill dst
+  MoveFile Target & "\" & IntermFilename & DocFormat_S, dst 'rename
   Addlog Tr.Translate("Done. # file#{,s} processed.", True, Count_Files), vbInformation
-  'If Confirm("keep intermediary files? They won't be deleted automatically.") = True Then _
-  '   frmMain.InvokeTool T_RmTmp, frmMain.mnuT_RemTmp.Caption, True
-  ShellOpen hWnd, Target & "\" & DestFilename
+  ShellOpen hWnd, dst
  End If
 End Sub
 
 Public Sub MergeFilesS_CB(fe As clsEnumFiles, IsDirectory As Boolean, name As String)
- Dim p As Integer, parent As String, src As String
+ Dim p As Integer, Parent As String, src As String, dst As String
  Dim arr() As String, u As Integer, i As Integer, d As Object
  If IsDirectory = False Then Exit Sub
  arr = Split(ReadFile(name & OrderFilename), vbCrLf)
@@ -262,11 +280,11 @@ Public Sub MergeFilesS_CB(fe As clsEnumFiles, IsDirectory As Boolean, name As St
   src = name & arr(i)
   'If it is a directory, we have to use the file named IntermFilename into it.
   If (GetAttr(src) And vbDirectory) = vbDirectory Then
-   If FileExists(src & "\" & IntermFilename) = False Then
+   If FileExists(src & "\" & IntermFilename & DocFormat_S) = False Then
     Addlog Tr.Translate("Empty folder: $", True, src)
     src = ""
    Else
-    src = src & "\" & IntermFilename
+    src = src & "\" & IntermFilename & DocFormat_S
    End If
   Else
    src = name & arr(i)
@@ -285,15 +303,16 @@ Public Sub MergeFilesS_CB(fe As clsEnumFiles, IsDirectory As Boolean, name As St
    Addlog Tr.Translate("Merged: $", True, name & arr(i))
   End If
  Next i
+ dst = name & IntermFilename & DocFormat_S
  On Error Resume Next
- d.SaveAs name & IntermFilename
+ d.SaveAs dst, , , , False
  If err Then
-  Addlog Tr.Translate("Can't save $", True, name & IntermFilename), vbExclamation
+  Addlog Tr.Translate("Can't save $", True, dst), vbExclamation
   fe.Halt = True
   Exit Sub
  End If
  On Error GoTo 0
- Addlog Tr.Translate("Saved: $", True, name & IntermFilename)
+ Addlog Tr.Translate("Saved: $", True, dst)
  d.Close: Set d = Nothing
 End Sub
 
@@ -324,34 +343,38 @@ Private Function MergeFiles_FastRec(d As Object, Target As String) As Boolean
 End Function
 
 Public Sub MergeFiles(hWnd As Long, Target As String, Tpl As String)
- Dim d As Object, dest As String
+ Dim d As Object, dst As String
+ GetWordObject
  On Error Resume Next
  Set d = WordObj.Documents.Add(Tpl)
  If err Then
+  DisposeWordObject
   Addlog Tr.Translate("Can't use the template $", True, Prog.Tpl), vbExclamation
   Exit Sub
  End If
  On Error GoTo 0
  Count_Files = 0
  If MergeFiles_FastRec(d, Target) Then Exit Sub
- dest = Target & DestFilename
- d.SaveAs dest
+ dst = Target & DestFilename & DocFormat_S
+ SafeKill dst
+ d.SaveAs dst
  d.Close: Set d = Nothing
- GetWordObject
- Addlog Tr.Translate("Saved: $", True, dest)
+ DisposeWordObject
+ Addlog Tr.Translate("Saved: $", True, dst)
  Addlog Tr.Translate("Done. # file#{,s} processed.", True, Count_Files)
- ShellOpen hWnd, dest
+ ShellOpen hWnd, dst
 End Sub
 
 Public Sub Tools_CB(fe As clsEnumFiles, FE_Mode As EnumMode, IsDirectory As Boolean, name As String)
- Dim d As Object, s As Object, hf As Object, short As String
+ Dim d As Object, s As Object, hf As Object, short As String, ne As String
 
  If IsDirectory Then Exit Sub
  short = Mid$(name, InStrRev(name, "\") + 1)
+ ne = RemoveExtension(short)
  If FE_Mode = T_Reset Then
   If short <> OrderFilename Then Exit Sub
  ElseIf FE_Mode = T_RmTmp Then
-  If short <> IntermFilename Then Exit Sub
+  If ne <> IntermFilename Then Exit Sub
  Else
   If InterestingObject(fe, False, short) = False Then Exit Sub
  End If
@@ -361,12 +384,12 @@ Public Sub Tools_CB(fe As clsEnumFiles, FE_Mode As EnumMode, IsDirectory As Bool
  Select Case FE_Mode
   Case T_Reset: SafeKill name
   Case T_RmTmp
-   If short = IntermFilename Then
+   If ne = IntermFilename Then
     SafeKill name
     Count_Files = Count_Files + 1
    End If
   Case T_RmHF
-   Set d = WordObj.Documents.Open(name)
+   Set d = WordObj.Documents.Open(name, , , False)
    For Each s In d.Sections
     For Each hf In s.Headers
      hf.Range.Delete
@@ -459,8 +482,6 @@ Public Sub ChooseLanguage()
 End Sub
 
 Public Sub GetWordObject()
- 'We can't reuse the object after a merging process
- DisposeWordObject
  'Create a new one and catch any error
  Set WordObj = CreateObject("Word.Application")
  If err Then
@@ -470,7 +491,7 @@ Public Sub GetWordObject()
  On Error GoTo 0
 End Sub
 
-Private Sub DisposeWordObject()
+Public Sub DisposeWordObject()
  On Error Resume Next
  WordObj.Quit
  Set WordObj = Nothing
@@ -484,7 +505,10 @@ Private Sub Main()
  Tr.LoadModel "\en.trn"
  LoadSettings
 
+ 'Word installation test
  GetWordObject
+ DisposeWordObject
+
  frmMain.Show
 End Sub
 
