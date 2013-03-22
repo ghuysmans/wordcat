@@ -140,14 +140,40 @@ Public Function Enumerate(ByVal Path As String, Optional Recursive As Boolean = 
 End Function
 
 'The API doesn't handle any other filter than *.*, so I have to check the extension myself. Thanks, MS!
-Public Function CheckExtension(Filename As String, Extension As String) As Boolean
+Public Function CheckExtension(FileName As String, Extension As String) As Boolean
 'Returns TRUE if it matches, FALSE if it doesn't.
  Dim s As String
  On Error GoTo err
- s = Right$(Filename, Len(Extension) + 1)
+ s = Right$(FileName, Len(Extension) + 1)
  If LCase$(s) = "." & LCase$(Extension) Then CheckExtension = True
  'If an error has occured (too short name) OR if it doesn't match, default=FALSE.
 err:
+End Function
+
+Public Function CheckExtensionL(FileName As String, Exts As String) As Integer
+'Returns -1 if it fails or the index of the extension
+ Dim e() As String, i As Integer, b As Integer
+ e = Split(Exts, ","): b = UBound(e)
+ For i = 0 To b
+  If CheckExtension(FileName, e(i)) = True Then
+   CheckExtensionL = i
+   Exit Function
+  End If
+ Next i
+ CheckExtensionL = -1
+End Function
+
+Public Function GetExtensionFromL(Id As Integer, Exts As String) As String
+ Dim e() As String
+ e = Split(Exts, ",")
+ GetExtensionFromL = e(Id)
+End Function
+
+Public Function GetShortName(ByVal FileName As String, Optional Parent As String = "") As String
+ Dim p As Integer, short As String
+ p = InStrRev(FileName, "\", Len(FileName) - 1)
+ Parent = Mid$(FileName, 1, p)
+ GetShortName = Mid$(FileName, p + 1)
 End Function
 
 Public Function GetCanonicalFolderName(ByVal fname As String) As String

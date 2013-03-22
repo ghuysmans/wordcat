@@ -379,30 +379,30 @@ Public Sub InvokeTool(m As EnumMode, name As String, rec As Boolean)
  EnableControls False
  Addlog Tr.Translate("Invoked tool: $", True, name)
  Prog.Count_Files = 0
+ GetWordObject
  Select Case m
   Case T_RmHF
    If Confirm("modify all documents? This action can't be undone!") = False Then
     Addlog Tr.Translate("Cancelled.", True)
-    EnableControls True
-    Exit Sub
+    GoTo ex
    End If
   Case T_Reset
    If Confirm("reset order of all files? This action can't be undone!") = False Then
     Addlog Tr.Translate("Cancelled.", True)
-    EnableControls True
-    Exit Sub
+    GoTo ex
    End If
  End Select
  FE_Mode = m
  If fe.Enumerate(Prog.Target, rec) Then
   Addlog Tr.Translate("Can't enumerate files into $!", True, Prog.Target), vbExclamation
-  EnableControls True
-  Exit Sub
+  GoTo ex
  End If
  Select Case m
   Case T_CtF, T_RmTmp, T_Reset: Addlog Tr.Translate("Done. # file#{,s} processed.", True, Prog.Count_Files), vbInformation
   Case T_RmHF: Addlog Tr.Translate("Headers/footers removed. # file#{,s} processed.", True, Prog.Count_Files), vbInformation
  End Select
+ex:
+ DisposeWordObject
  EnableControls True
 End Sub
 
