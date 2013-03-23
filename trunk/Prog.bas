@@ -483,6 +483,7 @@ End Sub
 
 Public Sub GetWordObject()
  'Create a new one and catch any error
+ On Error Resume Next
  Set WordObj = CreateObject("Word.Application")
  If err Then
   MsgBox Tr.Translate("The Microsoft Word library can't be loaded. Is it installed?", True), vbCritical
