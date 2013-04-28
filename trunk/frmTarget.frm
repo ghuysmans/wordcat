@@ -4,12 +4,12 @@ Begin VB.Form frmTarget
    ClientHeight    =   780
    ClientLeft      =   45
    ClientTop       =   315
-   ClientWidth     =   7455
+   ClientWidth     =   6975
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   780
-   ScaleWidth      =   7455
+   ScaleWidth      =   6975
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.ComboBox cmbTpl 
@@ -18,13 +18,13 @@ Begin VB.Form frmTarget
       Style           =   2  'Dropdown List
       TabIndex        =   1
       Top             =   420
-      Width           =   5655
+      Width           =   5175
    End
    Begin VB.CommandButton cmdOk 
       Caption         =   "OPEN"
       Enabled         =   0   'False
       Height          =   315
-      Left            =   6600
+      Left            =   6120
       TabIndex        =   2
       Top             =   420
       Width           =   795
@@ -91,6 +91,7 @@ Private Sub Form_Activate()
  Me.Caption = Tr.Translate("Target directory", True)
  Me.txtTarget.Text = Prog.Target
  CheckTarget Me.txtTarget.Text
+ PressedOK = False
 End Sub
 
 
